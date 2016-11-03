@@ -51,11 +51,11 @@ function run() {
 
   let resolution = Promise.resolve();
 
-  getColorIds(browser)
-    .then((ids) => {
-      return ids.map((id, i) => {
+  getColors(browser)
+    .then((colors) => {
+      return colors.map((color, i) => {
         return function promise() {
-          return scrape(browser, id)
+          return scrape(browser, color)
             .then(aggregate);
         }; 
       });
@@ -87,18 +87,21 @@ function aggregate(result) {
   return aggregator;
 }
 
-function getColorIds(browser) {
+function getColors(browser) {
   return new Promise((resolve, reject) => {
     browser
       .evaluate(() => {
         return Array.prototype.slice.call(
           document.getElementsByClassName('colorOpt')
         ).map((colorEl) => {
-          return colorEl.id;
+          return {
+            id: colorEl.id,
+            color: colorEl.getElementsByTagName('img')[0].alt
+          };
         });
       })
-      .then((ids) => {
-        return resolve(ids);
+      .then((colors) => {
+        return resolve(colors);
       })
       .catch((err) => {
         return reject('Error in getColorIds', err);
@@ -107,14 +110,18 @@ function getColorIds(browser) {
 }
 
 
-function scrape(browser, id) {
+function scrape(browser, color) {
   return new Promise((resolve, reject) => {
-    const selector = 'li#' + id + ' a';
-    const selected = 'li#' + id + '.selected';
+    const selector = 'li#' + color.id + ' a';
     
     browser
       .click(selector)
-      .wait(5000)
+      .wait((c) => {
+        return c.color === document
+          .getElementById('spanSelectedColorName')
+          .innerText
+          .trim();  
+      }, color)
       .evaluate((conf) => {
         let els = {};
         for ( var key in conf ) {
