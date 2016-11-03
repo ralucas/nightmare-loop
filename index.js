@@ -114,7 +114,7 @@ function scrape(browser, id) {
     
     browser
       .click(selector)
-      .wait(selected)
+      .wait(5000)
       .evaluate((conf) => {
         let els = {};
         for ( var key in conf ) {
