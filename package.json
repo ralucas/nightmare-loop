@@ -1,0 +1,20 @@
+{
+  "name": "nightmare-loop",
+  "version": "1.0.0",
+  "description": "Example using Nightmare for web scraping",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha",
+    "start": "node index.js"
+  },
+  "author": "R.A. Lucas",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "lodash": "^4.16.5",
+    "nightmare": "^2.8.1"
+  },
+  "devDependencies": {
+    "mocha": "^3.1.2"
+  }
+}
