@@ -8,8 +8,10 @@ const config = require('./config');
 const dom = require('./lib/dom');
 const models = require('./models');
 
-// url to scrape
-const URL = process.argv[2];
+// Url to scrape
+// There's a default url here...Remove when ready
+const URL = process.argv[2] || 
+  "http://www.forever21.com/Product/Product.aspx?br=F21&category=top_blouses&productid=2000169528";
 if ( !URL ) {
   process.exit('A url is required');
 }
@@ -17,7 +19,8 @@ if ( !URL ) {
 let aggregator = [];
 
 function writeFile(dataFile, data) {
-  var filePath = path.join(__dirname, 'data', dataFile + '.json');
+  const dataFileName = dataFile + '-' + new Date().getTime() + '.json';
+  const filePath = path.join(__dirname, 'data', dataFileName);
   return new Promise((resolve, reject) => {
     fs.writeFile(filePath, JSON.stringify(data), (err) => {
       if (err) {
@@ -34,8 +37,9 @@ function writeFile(dataFile, data) {
 
 // Let's get started
 function run() {
+  const showBrowser = process.env.SHOW_BROWSER === 'false' ? false : true;
   const nightmareOpts = {
-    show: true,
+    show: showBrowser,
   };
 
   // Instantiate
@@ -106,11 +110,11 @@ function getColorIds(browser) {
 function scrape(browser, id) {
   return new Promise((resolve, reject) => {
     const selector = 'li#' + id + ' a';
-    const nightmare = Nightmare({show: true});
+    const selected = 'li#' + id + '.selected';
     
     browser
       .click(selector)
-      .wait(10000)
+      .wait(selected)
       .evaluate((conf) => {
         let els = {};
         for ( var key in conf ) {

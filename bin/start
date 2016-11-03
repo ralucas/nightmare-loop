@@ -1,3 +1,0 @@
-#!/bin/bash
-
-npm start "http://www.forever21.com/Product/Product.aspx?br=F21&category=top_blouses&productid=2000169528"
